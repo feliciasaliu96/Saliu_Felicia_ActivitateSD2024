@@ -17,11 +17,10 @@ Smartphone citireSmartphone() {
 
     printf("ID: ");
     scanf("%d", &s.id);
-    getchar(); // consumã \n
-
+    getchar();
     printf("Firma: ");
     fgets(buffer, sizeof(buffer), stdin);
-    buffer[strcspn(buffer, "\n")] = 0; // eliminã \n
+    buffer[strcspn(buffer, "\n")] = 0; 
     s.firma = (char*)malloc(strlen(buffer) + 1);
     strcpy(s.firma, buffer);
 
