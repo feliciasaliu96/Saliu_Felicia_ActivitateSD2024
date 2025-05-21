@@ -4,45 +4,52 @@
 #include <string.h>
 #include <stdbool.h>
 
-struct Fisier {
+
+struct Masina {
     int id;
-    char* nume;
-    int dimensiune;
-    bool esteDeschis;
+    char* marca;
+    float pret;
+    int anFabricatie;
 };
-
-struct Fisier initializare(int id, const char* nume, int dimensiune, bool esteDeschis) {
-    struct Fisier f;
-    f.id = id;
-    f.nume = (char*)malloc(strlen(nume) + 1);
-    strcpy(f.nume, nume);
-    f.dimensiune = dimensiune;
-    f.esteDeschis = esteDeschis;
-    return f;
+ 
+struct Masina initializare(int id, const char* marca, float pret, int anFabricatie) {
+    struct Masina m;
+    m.id = id;
+    m.marca = (char*)malloc(sizeof(char)*strlen(marca) + 1);
+    strcpy(m.marca, marca);
+    m.pret = pret;
+    m.anFabricatie = anFabricatie;
+    return m;
 }
-void afisare(struct Fisier f) {
-
-    if(f.nume!=NULL)
-    printf("%d Fisierul %s cu dimensiunea %d esteDeschis %d\n", f.id, f.nume, f.dimensiune, f.esteDeschis);
+void afisare(struct Masina m) {
+    if (m.marca != NULL)
+        printf("Masina %d: %s, Pret: %.2f, An: %d\n", m.id, m.marca, m.pret, m.anFabricatie);
     else
-        printf("%d Fisierul [DEZALOCAT] cu dimensiunea %d esteDeschis %d\n", f.id, f.dimensiune, f.esteDeschis);
+        printf("Masina %d: [marca dezalocata], Pret: %.2f, An: %d\n", m.id, m.pret, m.anFabricatie);
 }
-void modificaDimensiune(struct Fisier* f, int dimensiuneNoua) {
 
-    if (dimensiuneNoua > 0)
-        f->dimensiune = dimensiuneNoua;
-}
-void dezalocare(struct Fisier* f) {
-    if (f->nume != NULL)
-        free(f->nume);
-    f->nume = NULL;
+void dezalocare(struct Masina* m) {
+    if (m->marca != NULL) {
+        free(m->marca);
+        m->marca = NULL;
+    }
 }
 int main() {
-    struct Fisier f = initializare(1, "tema", 34, true);
-    afisare(f);
-    modificaDimensiune(&f, 50);
-    afisare(f);
-    dezalocare(&f);
-    afisare(f);
+
+    struct Masina m = initializare(1, "Ford", 30000, 2020);
+    afisare(m);
+   const int nrMasini = 5;
+   struct Masina* masini;
+   masini = (struct Masina*)malloc(sizeof(struct Masina) * nrMasini);
+   masini[0] = initializare(1, "Dacia", 15000, 2018);
+   masini[1] = initializare(2, "BMW", 30000, 2020);
+   masini[2] = initializare(3, "Ford", 18000, 2017);
+   masini[3] = initializare(4, "Toyota", 19000, 2014);
+   masini[4] = initializare(5, "VW", 17000, 2019);
+   printf("Toate Masinile \n");
+   for (int i = 0; i < nrMasini; i++) {
+       afisare(masini[i]);
+   }
+  
     return 0;
 }
