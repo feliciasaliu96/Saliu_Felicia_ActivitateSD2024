@@ -2,84 +2,47 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 
-typedef struct {
+struct Fisier {
     int id;
-    char* firma;
-    float diagonala;
-    float* preturi;
-    int nrMagazine;
-} Smartphone;
+    char* nume;
+    int dimensiune;
+    bool esteDeschis;
+};
 
-Smartphone citireSmartphone() {
-    Smartphone s;
-    char buffer[100];
-
-    printf("ID: ");
-    scanf("%d", &s.id);
-    getchar();
-    printf("Firma: ");
-    fgets(buffer, sizeof(buffer), stdin);
-    buffer[strcspn(buffer, "\n")] = 0; 
-    s.firma = (char*)malloc(strlen(buffer) + 1);
-    strcpy(s.firma, buffer);
-
-    printf("Diagonala (inch): ");
-    scanf("%f", &s.diagonala);
-
-    printf("Numar magazine: ");
-    scanf("%d", &s.nrMagazine);
-
-    s.preturi = (float*)malloc(s.nrMagazine * sizeof(float));
-    for (int i = 0; i < s.nrMagazine; i++) {
-        printf("Pret in magazinul %d: ", i + 1);
-        scanf("%f", &s.preturi[i]);
-    }
-
-    return s;
+struct Fisier initializare(int id, const char* nume, int dimensiune, bool esteDeschis) {
+    struct Fisier f;
+    f.id = id;
+    f.nume = (char*)malloc(strlen(nume) + 1);
+    strcpy(f.nume, nume);
+    f.dimensiune = dimensiune;
+    f.esteDeschis = esteDeschis;
+    return f;
 }
+void afisare(struct Fisier f) {
 
-float calculeazaMediePreturi(Smartphone s) {
-    float suma = 0;
-    for (int i = 0; i < s.nrMagazine; i++) {
-        suma += s.preturi[i];
-    }
-    return (s.nrMagazine > 0) ? suma / s.nrMagazine : 0;
+    if(f.nume!=NULL)
+    printf("%d Fisierul %s cu dimensiunea %d esteDeschis %d\n", f.id, f.nume, f.dimensiune, f.esteDeschis);
+    else
+        printf("%d Fisierul [DEZALOCAT] cu dimensiunea %d esteDeschis %d\n", f.id, f.dimensiune, f.esteDeschis);
 }
+void modificaDimensiune(struct Fisier* f, int dimensiuneNoua) {
 
-void modificaDiagonala(Smartphone* s, float nouaDiagonala) {
-    s->diagonala = nouaDiagonala;
+    if (dimensiuneNoua > 0)
+        f->dimensiune = dimensiuneNoua;
 }
-
-void afisareSmartphone(Smartphone s) {
-    printf("\n--- Detalii Smartphone ---\n");
-    printf("ID: %d\n", s.id);
-    printf("Firma: %s\n", s.firma);
-    printf("Diagonala: %.2f inch\n", s.diagonala);
-    printf("Preturi in %d magazine:\n", s.nrMagazine);
-    for (int i = 0; i < s.nrMagazine; i++) {
-        printf("  Magazin %d: %.2f lei\n", i + 1, s.preturi[i]);
-    }
-    printf("Media preturilor: %.2f lei\n", calculeazaMediePreturi(s));
+void dezalocare(struct Fisier* f) {
+    if (f->nume != NULL)
+        free(f->nume);
+    f->nume = NULL;
 }
-
-void elibereazaMemorie(Smartphone* s) {
-    free(s->firma);
-    free(s->preturi);
-}
-
 int main() {
-    Smartphone s = citireSmartphone();
-    afisareSmartphone(s);
-
-    float nouaDiagonala;
-    printf("\nNoua diagonala: ");
-    scanf("%f", &nouaDiagonala);
-    modificaDiagonala(&s, nouaDiagonala);
-
-    printf("\nDupa modificare:\n");
-    afisareSmartphone(s);
-
-    elibereazaMemorie(&s);
+    struct Fisier f = initializare(1, "tema", 34, true);
+    afisare(f);
+    modificaDimensiune(&f, 50);
+    afisare(f);
+    dezalocare(&f);
+    afisare(f);
     return 0;
 }
